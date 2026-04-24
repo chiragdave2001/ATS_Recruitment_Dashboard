@@ -272,14 +272,15 @@ elif page == "Hiring Pipeline":
     """)
     if not ctc_analysis.empty and pd.notna(ctc_analysis.iloc[0]["AVG_CURRENT_CTC"]):
         c1, c2, c3, c4 = st.columns(4)
+        r = ctc_analysis.iloc[0]
         with c1:
-            metric_card("Avg Current CTC", f"₹{ctc_analysis.iloc[0]['AVG_CURRENT_CTC']:,.0f}")
+            metric_card("Avg Current CTC", f"₹{r['AVG_CURRENT_CTC']:,.0f}" if pd.notna(r["AVG_CURRENT_CTC"]) else "N/A")
         with c2:
-            metric_card("Avg Expected CTC", f"₹{ctc_analysis.iloc[0]['AVG_EXPECTED_CTC']:,.0f}")
+            metric_card("Avg Expected CTC", f"₹{r['AVG_EXPECTED_CTC']:,.0f}" if pd.notna(r["AVG_EXPECTED_CTC"]) else "N/A")
         with c3:
-            metric_card("Avg Confirmed CTC", f"₹{ctc_analysis.iloc[0]['AVG_CONFIRMED_CTC']:,.0f}")
+            metric_card("Avg Confirmed CTC", f"₹{r['AVG_CONFIRMED_CTC']:,.0f}" if pd.notna(r["AVG_CONFIRMED_CTC"]) else "N/A")
         with c4:
-            metric_card("Avg CTC Variance", f"₹{ctc_analysis.iloc[0]['AVG_CTC_VARIANCE']:,.0f}")
+            metric_card("Avg CTC Variance", f"₹{r['AVG_CTC_VARIANCE']:,.0f}" if pd.notna(r["AVG_CTC_VARIANCE"]) else "N/A")
     else:
         st.info("No CTC data available yet.")
 
@@ -430,18 +431,20 @@ elif page == "Hiring Efficiency":
         WHERE CURRENT_CTC IS NOT NULL
     """)
     if not ctc_hire.empty and pd.notna(ctc_hire.iloc[0]["AVG_CURRENT"]):
+        r = ctc_hire.iloc[0]
         ctc_data = pd.DataFrame({
             "CATEGORY": ["Current CTC", "Expected CTC", "Confirmed CTC"],
             "AMOUNT": [
-                float(ctc_hire.iloc[0]["AVG_CURRENT"]),
-                float(ctc_hire.iloc[0]["AVG_EXPECTED"]),
-                float(ctc_hire.iloc[0]["AVG_CONFIRMED"])
+                float(r["AVG_CURRENT"]) if pd.notna(r["AVG_CURRENT"]) else 0,
+                float(r["AVG_EXPECTED"]) if pd.notna(r["AVG_EXPECTED"]) else 0,
+                float(r["AVG_CONFIRMED"]) if pd.notna(r["AVG_CONFIRMED"]) else 0
             ]
         })
         plot_bar(ctc_data, "CATEGORY", "AMOUNT", "Avg CTC Comparison (Hires)",
                  color=COLORS[4], figsize=(8, 4))
+        v = r["AVG_CTC_CHANGE"]
         st.metric("Avg CTC Change from Current",
-                  f"₹{ctc_hire.iloc[0]['AVG_CTC_CHANGE']:,.0f}")
+                  f"₹{v:,.0f}" if pd.notna(v) else "N/A")
     else:
         st.info("No CTC hire data available yet.")
 
