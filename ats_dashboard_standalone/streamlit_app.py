@@ -10,6 +10,7 @@ DB_SCHEMA = "ATS_DWH.DWH"
 COLORS = ["#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
           "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"]
 
+@st.cache_resource
 def get_connection():
     return snowflake.connector.connect(
         account=st.secrets["snowflake"]["account"],
@@ -17,6 +18,7 @@ def get_connection():
         password=st.secrets["snowflake"]["password"],
         warehouse=st.secrets["snowflake"]["warehouse"],
         role=st.secrets["snowflake"].get("role", "ACCOUNTADMIN"),
+        client_session_keep_alive=True,
     )
 
 def style_ax(ax, title=None, xlabel=None, ylabel=None):
@@ -37,14 +39,12 @@ def style_ax(ax, title=None, xlabel=None, ylabel=None):
 @st.cache_data(ttl=300)
 def run_query(sql):
     conn = get_connection()
-    try:
-        cur = conn.cursor()
-        cur.execute(sql)
-        columns = [desc[0] for desc in cur.description]
-        data = cur.fetchall()
-        return pd.DataFrame(data, columns=columns)
-    finally:
-        conn.close()
+    cur = conn.cursor()
+    cur.execute(sql)
+    columns = [desc[0] for desc in cur.description]
+    data = cur.fetchall()
+    cur.close()
+    return pd.DataFrame(data, columns=columns)
 
 def safe_query(sql):
     try:
