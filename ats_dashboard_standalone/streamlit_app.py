@@ -63,7 +63,7 @@ def plot_bar(data, x_col, y_col, title, color=COLORS[0], horizontal=False, figsi
     data = data.copy()
     data[y_col] = pd.to_numeric(data[y_col], errors="coerce").fillna(0)
     labels = data[x_col].astype(str).tolist()
-    values = data[y_col].tolist()
+    values = [float(v) for v in data[y_col]]
     fig, ax = plt.subplots(figsize=figsize)
     if horizontal:
         bars = ax.barh(labels, values, color=color, edgecolor="none", height=0.6)
@@ -108,7 +108,7 @@ def plot_line(data, x_col, y_col, title, color=COLORS[0], figsize=(10, 4)):
     data = data.copy()
     data[y_col] = pd.to_numeric(data[y_col], errors="coerce").fillna(0)
     labels = data[x_col].astype(str).tolist()
-    values = data[y_col].tolist()
+    values = [float(v) for v in data[y_col]]
     fig, ax = plt.subplots(figsize=figsize)
     ax.plot(labels, values, color=color, marker="o", linewidth=2, markersize=5)
     ax.fill_between(labels, values, alpha=0.15, color=color)
