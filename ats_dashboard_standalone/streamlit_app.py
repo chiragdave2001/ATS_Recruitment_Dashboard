@@ -89,7 +89,7 @@ def plot_bar(data, x_col, y_col, title, color=COLORS[0], horizontal=False, figsi
     st.pyplot(fig, transparent=True)
     plt.close(fig)
 
-def plot_pie(data, label_col, value_col, title, figsize=(6, 6)):
+def plot_pie(data, label_col, value_col, title, figsize=(6, 4)):
     data = data.copy()
     data[value_col] = pd.to_numeric(data[value_col], errors="coerce").fillna(0)
     fig, ax = plt.subplots(figsize=figsize)
@@ -163,7 +163,7 @@ if page == "Overview":
         """)
         if not apps_time.empty:
             apps_time["PERIOD"] = apps_time["MONTH_NAME"].str[:3] + " " + apps_time["YEAR_NUMBER"].astype(str)
-            plot_line(apps_time, "PERIOD", "APPLICATION_COUNT", "Applications Over Time", color=COLORS[0])
+            plot_line(apps_time, "PERIOD", "APPLICATION_COUNT", "Applications Over Time", color=COLORS[0], figsize=(6, 4))
         else:
             st.info("No application data available yet.")
 
@@ -178,7 +178,7 @@ if page == "Overview":
         """)
         if not hires_time.empty:
             hires_time["PERIOD"] = hires_time["MONTH_NAME"].str[:3] + " " + hires_time["YEAR_NUMBER"].astype(str)
-            plot_line(hires_time, "PERIOD", "HIRE_COUNT", "Hires Over Time", color=COLORS[4])
+            plot_line(hires_time, "PERIOD", "HIRE_COUNT", "Hires Over Time", color=COLORS[4], figsize=(6, 4))
         else:
             st.info("No hire data available yet.")
 
@@ -194,9 +194,9 @@ if page == "Overview":
     if not status_dist.empty:
         col_pie, col_bar = st.columns(2)
         with col_pie:
-            plot_pie(status_dist, "STATUS", "CNT", "Application Status Distribution")
+            plot_pie(status_dist, "STATUS", "CNT", "Application Status Distribution", figsize=(6, 4))
         with col_bar:
-            plot_bar(status_dist, "STATUS", "CNT", "Application Status Counts", color=COLORS[2])
+            plot_bar(status_dist, "STATUS", "CNT", "Application Status Counts", color=COLORS[2], figsize=(6, 4))
     else:
         st.info("No application status data available yet.")
 
@@ -245,7 +245,7 @@ elif page == "Hiring Pipeline":
             ORDER BY CNT DESC
         """)
         if not by_source.empty:
-            plot_bar(by_source, "SOURCE", "CNT", "Applications by Source", color=COLORS[1], horizontal=True)
+            plot_bar(by_source, "SOURCE", "CNT", "Applications by Source", color=COLORS[1], horizontal=True, figsize=(6, 4))
         else:
             st.info("No source data available yet.")
 
@@ -258,7 +258,7 @@ elif page == "Hiring Pipeline":
             ORDER BY CNT DESC
         """)
         if not by_dept.empty:
-            plot_bar(by_dept, "DEPARTMENT", "CNT", "Applications by Department", color=COLORS[0], horizontal=True)
+            plot_bar(by_dept, "DEPARTMENT", "CNT", "Applications by Department", color=COLORS[0], horizontal=True, figsize=(6, 4))
         else:
             st.info("No department data available yet.")
 
@@ -354,7 +354,7 @@ elif page == "Interview Analytics":
             GROUP BY dit.INTERVIEW_TYPE_NAME ORDER BY CNT DESC
         """)
         if not by_type.empty:
-            plot_pie(by_type, "TYPE", "CNT", "Interviews by Type")
+            plot_pie(by_type, "TYPE", "CNT", "Interviews by Type", figsize=(6, 4))
         else:
             st.info("No interview type data available yet.")
 
@@ -366,7 +366,7 @@ elif page == "Interview Analytics":
             GROUP BY das.APPLICATION_STAGE_NAME ORDER BY CNT DESC
         """)
         if not by_stage.empty:
-            plot_bar(by_stage, "STAGE", "CNT", "Interviews by Stage", color=COLORS[5])
+            plot_bar(by_stage, "STAGE", "CNT", "Interviews by Stage", color=COLORS[5], figsize=(6, 4))
         else:
             st.info("No interview stage data available yet.")
 
@@ -561,7 +561,7 @@ elif page == "Job & Skill Analytics":
             GROUP BY WORK_MODE_NAME ORDER BY JOBS DESC
         """)
         if not jobs_wm.empty:
-            plot_pie(jobs_wm, "WORK_MODE", "JOBS", "Jobs by Work Mode")
+            plot_pie(jobs_wm, "WORK_MODE", "JOBS", "Jobs by Work Mode", figsize=(6, 4))
         else:
             st.info("No work mode data available yet.")
 
@@ -573,7 +573,7 @@ elif page == "Job & Skill Analytics":
             GROUP BY EMPLOYMENT_TYPE_NAME ORDER BY JOBS DESC
         """)
         if not jobs_et.empty:
-            plot_pie(jobs_et, "TYPE", "JOBS", "Jobs by Employment Type")
+            plot_pie(jobs_et, "TYPE", "JOBS", "Jobs by Employment Type", figsize=(6, 4))
         else:
             st.info("No employment type data available yet.")
 
